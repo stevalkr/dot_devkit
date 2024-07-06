@@ -1,0 +1,44 @@
+{
+  "nodes": {
+    "mesa-nixpkgs": {
+      "locked": {
+        "lastModified": 1679753558,
+        "narHash": "sha256-yizdiuHXyl1Icx5+s60OjFAZgB6jnP8Q7z5cp/rRu2o=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "c2ebb395cadfd081c015f7da5034b12c145bf6bc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "c2ebb395cadfd081c015f7da5034b12c145bf6bc",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1719357903,
+        "narHash": "sha256-kh77FmCH28SuqFd3Y27yrDBYOYQwQjSqxKISxF7g8uc=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "63d7d325993529cda2c93f1a5b0cca5360494a17",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-23.11-darwin",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "mesa-nixpkgs": "mesa-nixpkgs",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
