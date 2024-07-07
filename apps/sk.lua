@@ -30,11 +30,14 @@ end
 M.notify = require('shortkut.sys').notify
 M.source = require('shortkut.sys').source
 
+M.pkg = require('shortkut.pkg').pkg
+
 M.test = require('shortkut.builder').test
 M.build = require('shortkut.builder').build
 M.install = require('shortkut.builder').install
 M.clean = require('shortkut.builder').clean
 
+M.dev = require('shortkut.nix').dev
 M.flake = require('shortkut.nix').flake
 M.livebook = require('shortkut.nix').livebook
 

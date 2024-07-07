@@ -14,6 +14,10 @@ M.livebook = function(cwd, subcommands, options, rest_args, extra_args)
   return confirm_command(command)
 end
 
+M.dev = function(cwd, subcommands, options, rest_args, extra_args)
+  return M.flake(cwd, {}, { name = 'dev', store = options['store'] }, {}, {})
+end
+
 M.flake = function(cwd, subcommands, options, rest_args, extra_args)
   local name  = options['name'] or fs.split_path(cwd).name:lower()
   local store = fs.join(options['store'] or '~/.devkit')
@@ -50,7 +54,6 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
   io.write('Using flake "' .. name .. '" under\n  ' .. path .. '\n\n')
 
   local command = 'nix develop "' .. path .. '" ' .. save .. ' ' .. table.concat(extra_args, ' ') .. ' --command fish'
-
   return confirm_command(command, function() sh.set_env('DK_ENV', name, 1) end)
 end
 

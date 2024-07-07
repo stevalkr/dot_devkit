@@ -13,6 +13,15 @@ M.sh = sh or {
   get_env = function(...) end,
 }
 
+M.snake = function(path)
+  return path
+      :gsub('%f[^%l]%u', '_%1')
+      :gsub('%f[^%a]%d', '_%1')
+      :gsub('%f[^%d]%a', '_%1')
+      :gsub('(%u)(%u%l)', '%1_%2')
+      :lower()
+end
+
 M.load_env_file = function(path)
   local f = io.open(path, 'r')
   if f == nil then
