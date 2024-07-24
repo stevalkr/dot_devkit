@@ -23,16 +23,18 @@ M.pkg = function(cwd, subcommands, options, rest_args, extra_args)
       return [[mkdir -p ]] .. name .. [[ && ]] ..
              [[cd ]] .. name .. [[ && ]] ..
              [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
+             [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
              [[cp -r ]] .. fs.join(store, 'templates', 'meson', '*') .. [[ ./ && ]] ..
-             [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" meson.build]]
+             [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" meson.build Makefile]]
     end,
 
     cmake = function()
       return [[mkdir -p ]] .. name .. [[ && ]] ..
              [[cd ]] .. name .. [[ && ]] ..
              [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
+             [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
              [[cp -r ]] .. fs.join(store, 'templates', 'cmake', '*') .. [[ ./ && ]] ..
-             [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" CMakeLists.txt]]
+             [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" CMakeLists.txt Makefile]]
     end,
 
     catkin = function()

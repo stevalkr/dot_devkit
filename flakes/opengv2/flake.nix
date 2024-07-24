@@ -26,6 +26,9 @@ rec {
               inherit stdenv;
             };
 
+          rosbags = pkgs.python3Packages.callPackage ./rosbags.nix { };
+          evo = pkgs.python3Packages.callPackage ./evo.nix { rosbags = rosbags; };
+
           ceres-solver =
             pkgs.callPackage ./ceres-solver.nix { };
 
@@ -51,6 +54,7 @@ rec {
               pkgs.opencv
               pkgs.nanoflann
 
+              evo
               pkgs.pyright
               pkgs.python3
               pkgs.python3Packages.numpy

@@ -32,7 +32,13 @@ M.install = function(cwd, subcommands, options, rest_args, extra_args)
 end
 
 M.build = function(cwd, subcommands, options, rest_args, extra_args)
-  local name  = options['name'] or fs.split_path(cwd).name:lower()
+  local name = options['name'] or fs.split_path(cwd).name:lower()
+
+  local debug = options['debug'] or 'false'
+  if debug == 'true' then
+    name = name .. '_debug'
+  end
+
   local store = fs.join(options['store'] or '~/.devkit')
   local path  = fs.join(options['path'] or fs.join(store, 'builds', name))
 
@@ -45,7 +51,6 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
     end
   end
 
-  local debug = options['debug'] or 'false'
 
   io.write('Building "' .. name .. '" under\n  ' .. path .. '\n\n')
 
