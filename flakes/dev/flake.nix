@@ -14,13 +14,11 @@ rec {
           inherit system;
           overlays = [
             ros-overlay.overlays.default
-            (self: super: {
-              rosPackages.noetic = super.rosPackages.noetic // {
-                catkin-simple =
-                  pkgs.rosPackages.noetic.callPackage ./catkin-simple.nix { };
-                prophesee-event-msgs =
-                  pkgs.rosPackages.noetic.callPackage ./prophesee-event-msgs.nix { };
-              };
+            (final: prev: {
+              rosPackages.noetic =
+                prev.rosPackages.noetic.overrideScope (
+                  import ./overlays/ros-overlay.nix
+                );
             })
           ];
         };
@@ -31,7 +29,7 @@ rec {
             buildInputs = [
               pkgs.fmt
               pkgs.eigen
-              pkgs.opencv
+              pkgs.opencv4
               pkgs.ceres-solver
               pkgs.llvmPackages.openmp
 
@@ -43,12 +41,12 @@ rec {
               pkgs.python3Packages.matplotlib
               pkgs.python3Packages.scikit-learn
 
-              pkgs.colcon
-              pkgs.python3Packages.catkin-tools
-              # pkgs.rosPackages.noetic.rosbash
-              # pkgs.rosPackages.noetic.ros-core
-              pkgs.rosPackages.noetic.catkin-simple
-              pkgs.rosPackages.noetic.prophesee-event-msgs
+              # pkgs.colcon
+              # pkgs.python3Packages.catkin-tools
+              pkgs.rosPackages.noetic.rosbash
+              pkgs.rosPackages.noetic.ros-core
+              # pkgs.rosPackages.noetic.catkin-simple
+              # pkgs.rosPackages.noetic.prophesee-event-msgs
 
               pkgs.libGL
               pkgs.darwin.apple_sdk.frameworks.Cocoa
