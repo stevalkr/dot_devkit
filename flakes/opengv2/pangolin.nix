@@ -19,13 +19,13 @@
 stdenv.mkDerivation rec {
   pname = "pangolin";
 
-  version = "master";
+  version = "v0.9.2";
 
   src = fetchFromGitHub {
     owner = "stevenlovegrove";
     repo = "Pangolin";
-    rev = "heads/${version}";
-    sha256 = "sha256-qefK/e5nCtsdRNWFKll5S2VmK8gdx8lxMF8zkmTjQDQ=";
+    rev = "refs/tags/${version}";
+    sha256 = "sha256-rRR/+PdVcnOiv0X7OGBmTQe5l1XQ94nzyy02Tf95AWQ=";
   };
 
   nativeBuildInputs = [ cmake pkg-config doxygen ];

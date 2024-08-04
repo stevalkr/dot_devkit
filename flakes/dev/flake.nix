@@ -2,13 +2,12 @@ rec {
   description = "General Dev Environment";
 
   inputs = {
-    nixpkgs.url = github:nixos/nixpkgs/nixpkgs-24.05-darwin;
-    ros-overlay.url = github:lopsided98/nix-ros-overlay;
-    flake-utils.url = github:numtide/flake-utils;
+    ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+    nixpkgs.follows = "ros-overlay/nixpkgs";
   };
 
-  outputs = { self, nixpkgs, ros-overlay, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs = { self, nixpkgs, ros-overlay }:
+    ros-overlay.inputs.flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -43,16 +42,19 @@ rec {
 
               # pkgs.colcon
               # pkgs.python3Packages.catkin-tools
-              pkgs.rosPackages.noetic.rosbash
-              pkgs.rosPackages.noetic.ros-core
-              # pkgs.rosPackages.noetic.catkin-simple
-              # pkgs.rosPackages.noetic.prophesee-event-msgs
 
               pkgs.libGL
               pkgs.darwin.apple_sdk.frameworks.Cocoa
               pkgs.darwin.apple_sdk.frameworks.Carbon
               pkgs.darwin.apple_sdk.frameworks.OpenGL
               pkgs.darwin.apple_sdk.frameworks.GLUT
+
+              (with pkgs.rosPackages.noetic; buildEnv {
+                paths = [
+                  rosbash
+                  ros-core
+                ];
+              })
             ];
 
             nativeBuildInputs = [
@@ -78,4 +80,9 @@ rec {
           };
       }
     );
+
+  nixConfig = {
+    extra-substituters = [ "https://ros.cachix.org" ];
+    extra-trusted-public-keys = [ "ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo=" ];
+  };
 }

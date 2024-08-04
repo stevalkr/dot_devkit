@@ -5,7 +5,7 @@ local sh = require('utils').sh
 local confirm_command = require('utils').confirm_command
 
 M.livebook = function(cwd, subcommands, options, rest_args, extra_args)
-  local path    = fs.join('~/.devkit/flakes/livebook')
+  local path    = 'path:' .. fs.join('~/.devkit/flakes/livebook')
   local store   = fs.join('~/.devkit/nix-profiles/livebook')
   local file    = table.concat(require('utils').merge_tables(subcommands, rest_args, extra_args), ' ')
   local command = 'nix develop ' .. path .. ' --profile ' .. store
@@ -15,13 +15,14 @@ M.livebook = function(cwd, subcommands, options, rest_args, extra_args)
 end
 
 M.dev = function(cwd, subcommands, options, rest_args, extra_args)
-  return M.flake(cwd, {}, { name = 'dev', store = options['store'] }, {}, {})
+  return M.flake(cwd, {}, { name = 'dev', store = options['store'], save = options['save'] }, {}, {})
 end
 
 M.flake = function(cwd, subcommands, options, rest_args, extra_args)
   local name  = options['name'] or fs.split_path(cwd).name:lower()
   local store = fs.join(options['store'] or '~/.devkit')
   local path  = fs.join(options['path'] or fs.join(store, 'flakes', name))
+  local git = options['git'] == 'true' or false
 
   local save  = ''
   if options['save'] == 'true' then
@@ -49,6 +50,10 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
       use_shell = 'true',
       command = 'echo flake not found. && return 1'
     }
+  end
+
+  if not git then
+    path = 'path:' .. path
   end
 
   io.write('Using flake "' .. name .. '" under\n  ' .. path .. '\n\n')
