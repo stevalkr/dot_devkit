@@ -11,21 +11,23 @@ buildRosPackage rec {
   version = "master";
 
   src = fetchFromGitHub {
-    owner = "prophesee-ai";
-    repo = "prophesee_ros_wrapper";
+    owner = "ros-event-camera";
+    repo = "prophesee_event_msgs";
     rev = "heads/${version}";
-    sha256 = "sha256-EZAQ7c4zFQ7qSLhZCY36pdFeBCm1BPoGwjhgdhfRmdg=";
+    sha256 = "sha256-z8qNxdioHpa2jRT9EQybG10QWkDeV20WD/wPPtZ/SY0=";
   };
-
-  sourceRoot = "${src.name}/prophesee_event_msgs";
 
   buildType = "catkin";
   buildInputs = [ catkin message-generation ];
   propagatedBuildInputs = [ message-runtime std-msgs ];
   nativeBuildInputs = [ catkin ];
 
+  preConfigure = ''
+    export ROS_VERSION=1
+  '';
+
   meta = {
-    description = "The prophesee_event_msgs package";
+    description = "ROS messages for the prophesee event based cameras";
     license = with lib.licenses; [ asl20 ];
   };
 }

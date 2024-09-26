@@ -14,7 +14,7 @@ M.pkg = function(cwd, subcommands, options, rest_args, extra_args)
     return {
       search_path = 'true',
       use_shell = 'true',
-      command = 'echo --name is required. && return 1'
+      command = 'echo --name is required. && exit 1'
     }
   end
 
@@ -38,11 +38,11 @@ M.pkg = function(cwd, subcommands, options, rest_args, extra_args)
     end,
 
     catkin = function()
-      return [[echo Not implemented yet. Develop with catkin flake and run with conda ros env. && return 1]]
+      return [[echo Not implemented yet. Develop with catkin flake and run with conda ros env. && exit 1]]
     end,
 
     colcon = function()
-      return [[echo Not implemented yet. Develop and run with conda ros2 env. && return 1]]
+      return [[echo Not implemented yet. Develop and run with conda ros2 env. && exit 1]]
     end,
   }
 

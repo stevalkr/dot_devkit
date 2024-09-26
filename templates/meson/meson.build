@@ -1,7 +1,7 @@
 project('{{ project_name }}', 'cpp',
   default_options: {
     'buildtype': 'release',
-    'cpp_std'  : 'c++17',
+    'cpp_std'  : 'c++20',
     'cpp_args' : '-O3',
     'cpp_eh'   : 'none',
     }
@@ -53,7 +53,7 @@ executable('{{ project_name }}', [
 python = find_program('python3')
 gen = generator(python,
   output: '@BASENAME@_test.cpp',
-  arguments: [ '@SOURCE_DIR@/test/generator.py', '@INPUT@', '@OUTPUT@']
+  arguments: [ '@SOURCE_DIR@/test/generator.py', '@INPUT@', '@OUTPUT@' ]
   )
 test_dep = deps + [ dependency('doctest') ]
 

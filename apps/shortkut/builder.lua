@@ -4,6 +4,9 @@ local fs = require('utils').fs
 local sh = require('utils').sh
 local confirm_command = require('utils').confirm_command
 
+M.build_path = function(cwd, subcommands, options, rest_args, extra_args)
+end
+
 M.clean = function(cwd, subcommands, options, rest_args, extra_args)
   local name  = options['name'] or fs.split_path(cwd).name:lower()
   local store = fs.join(options['store'] or '~/.devkit')
@@ -49,6 +52,11 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
     if fs.exists(fs.join(cwd, '_build')) then
       path = fs.join(cwd, '_build')
     end
+  end
+
+  if #subcommands > 0 and subcommands[1] == 'find_path' then
+    print(path)
+    return {}
   end
 
 

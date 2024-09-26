@@ -4,7 +4,7 @@
 , catkin
 }:
 buildRosPackage rec {
-  pname = "ros-noetic-catkin-simple";
+  pname = "catkin-simple";
   version = "master";
 
   src = fetchFromGitHub {
@@ -16,10 +16,13 @@ buildRosPackage rec {
 
   buildType = "catkin";
   buildInputs = [ catkin ];
+  propagatedBuildInputs = [ catkin ];
   nativeBuildInputs = [ catkin ];
 
-  meta = {
+  meta = with lib; {
     description = "catkin, simpler";
-    license = with lib.licenses; [ asl20 ];
+    homepage = "https://github.com/catkin/catkin_simple";
+    platforms = platforms.unix;
+    license = licenses.asl20;
   };
 }

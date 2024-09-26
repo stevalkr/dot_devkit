@@ -48,7 +48,7 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
     return {
       search_path = 'true',
       use_shell = 'true',
-      command = 'echo flake not found. && return 1'
+      command = 'echo flake not found. && exit 1'
     }
   end
 
