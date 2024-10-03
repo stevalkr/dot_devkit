@@ -4,9 +4,6 @@ local fs = require('utils').fs
 local sh = require('utils').sh
 local confirm_command = require('utils').confirm_command
 
-M.build_path = function(cwd, subcommands, options, rest_args, extra_args)
-end
-
 M.clean = function(cwd, subcommands, options, rest_args, extra_args)
   local name  = options['name'] or fs.split_path(cwd).name:lower()
   local store = fs.join(options['store'] or '~/.devkit')
@@ -43,7 +40,12 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
   end
 
   local store = fs.join(options['store'] or '~/.devkit')
-  local path  = fs.join(options['path'] or fs.join(store, 'builds', name))
+
+  local default_path = fs.join(store, 'builds', name)
+  if options['local'] == 'true' then
+    default_path = fs.join(cwd, '_build')
+  end
+  local path  = fs.join(options['path'] or default_path)
 
   if not fs.exists(path) then
     if fs.exists(fs.join(cwd, 'build')) then
@@ -70,6 +72,7 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
   elseif fs.exists('Makefile') then
     proj_type = 'make'
   end
+  proj_type = options['type'] or proj_type
 
   local count = 0
   if fs.exists(path) then
@@ -135,6 +138,10 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
       if subcommands[1] == 'install' then
         return 'make install'
       end
+    end,
+
+    unknown = function()
+      return 'echo Unknown project type. && exit 1'
     end
   }
 
