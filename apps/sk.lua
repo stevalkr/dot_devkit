@@ -109,16 +109,7 @@ M.colcon = require('shortkut.ros').colcon
 --
 -- help
 --
-M.help = function(command)
-  local general_options = [[
-
-General Options:
-  -h, --help                           Print help message
-  -y, --confirm                        Confirm all prompts
-  --store <dir>                        Store directory, default to ~/.devkit ]]
-
-  if #command == 0 or command == 'help' then
-    return [[
+h['help'] = [[
 Usage:
   sk <command> [subcommands] [options] [--] <extra arguments>
 
@@ -136,10 +127,21 @@ Commands:
   ros2                                Start ros2 environment
   catkin                              Build with catkin
   colcon                              Build with colcon
-]] .. general_options
-  else
-    return h[command] .. general_options
+  help                                Print help message
+]]
+M.help = function(command)
+  local general_options = [[
+
+General Options:
+  -h, --help                           Print help message
+  -y, --confirm                        Confirm all prompts
+  --store <dir>                        Store directory, default to ~/.devkit ]]
+
+  if #command == 0 then
+    command = 'help'
   end
+
+  return (h[command] or '') .. general_options
 end
 
 return M
