@@ -39,10 +39,9 @@ Options:
 M.build = require('shortkut.builder').build
 h['build'] = [[
 Usage:
-  sk build [subcommands] [options] [--] <extra arguments>
+  sk build [subcommands] [options] [--] <extra arguments>    Build project
 
 Subcommands:
-  [none]                                 Build project
   test                                   Run tests
   install                                Install to system
   find_path                              Print build path
@@ -69,6 +68,20 @@ Usage:
 Options:
   -n, --name <name>                      Project name, default to cwd (lower case)
   -p, --path <build dir>                 Build directory, default to <store>/builds/<name> or cwd/build or cwd/_build
+  -l, --local                            Use local build directory cwd/_build
+  -d, --debug                            Debug build, default to false
+]]
+
+M.compile_commands = require('shortkut.builder').compile_commands
+h['compile_commands'] = [[
+Usage:
+  sk compile_commands [options]          Link compile_commands.json
+
+Options:
+  -n, --name <name>                      Project name, default to cwd (lower case)
+  -p, --path <build dir>                 Build directory, default to <store>/builds/<name> or cwd/build or cwd/_build
+  -l, --local                            Use local build directory cwd/_build
+  -d, --debug                            Debug build, default to false
 ]]
 
 
@@ -121,6 +134,7 @@ Commands:
   test                                Run tests
   install                             Install to system
   clean                               Clean build directory
+  compile_commands                    Link compile_commands.json
   dev                                 Start dev environment
   flake                               Start flake environment
   ros                                 Start ros environment

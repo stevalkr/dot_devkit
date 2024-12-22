@@ -95,7 +95,9 @@ rec {
               pkgs.clang-tools
               pkgs.cmake-format
               pkgs.markdownlint-cli
+              pkgs.stylua
               pkgs.lua-language-server
+              # pkgs.luaPackages.luacheck
             ];
 
             shellHook = ''

@@ -10,7 +10,7 @@ end
 
 M.flake = function(cwd, subcommands, options, rest_args, extra_args)
   local name  = options['name'] or fs.split_path(cwd).name:lower()
-  local store = fs.join(options['store'] or '~/.devkit')
+  local store = fs.join(options['store'])
   local path  = fs.join(options['path'] or fs.join(store, 'flakes', name))
   local git   = options['git'] == 'true' or false
 
@@ -30,11 +30,16 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
     return false
   end
 
-  if not check_flake(path) then
-    path = fs.join(cwd, 'flake')
+  local flake_path = nil
+  local candidates = { path, cwd, fs.join(cwd, 'flake') }
+  for _, candidate in ipairs(candidates) do
+    if check_flake(candidate) then
+      flake_path = candidate
+      break
+    end
   end
 
-  if not check_flake(path) then
+  if not flake_path then
     return {
       search_path = 'true',
       use_shell = 'true',
@@ -43,12 +48,12 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
   end
 
   if not git then
-    path = 'path:' .. path
+    flake_path = 'path:' .. flake_path
   end
 
-  io.write('Using flake "' .. name .. '" under\n  ' .. path .. '\n\n')
+  io.write('Using flake "' .. name .. '" under\n  ' .. flake_path .. '\n\n')
 
-  local command = 'nix develop "' .. path .. '" ' .. save .. ' ' .. table.concat(extra_args, ' ') .. ' --command fish'
+  local command = 'nix develop "' .. flake_path .. '" ' .. save .. ' ' .. table.concat(extra_args, ' ') .. ' --command fish'
   return confirm_command(command, function() sh.set_env('DK_ENV', name, 1) end)
 end
 

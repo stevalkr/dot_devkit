@@ -6,7 +6,7 @@ local confirm_command = require('utils').confirm_command
 
 M.ros = function(cwd, subcommands, options, rest_args, extra_args)
   local name    = options['name'] or fs.split_path(cwd).name:lower()
-  local store   = fs.join(options['store'] or '~/.devkit')
+  local store   = fs.join(options['store'])
   local path    = fs.join(options['path'] or fs.join(store, 'builds', 'catkin_' .. name))
   local command = [[conda activate ros]]
 
@@ -29,7 +29,7 @@ end
 
 M.catkin = function(cwd, subcommands, options, rest_args, extra_args)
   local name   = options['name'] or fs.split_path(cwd).name:lower()
-  local store  = fs.join(options['store'] or '~/.devkit')
+  local store  = fs.join(options['store'])
   local path   = fs.join(options['path'] or fs.join(store, 'builds', 'catkin_' .. name))
   local select = options['select'] or [[""]]
 
@@ -61,7 +61,7 @@ end
 
 M.ros2 = function(cwd, subcommands, options, rest_args, extra_args)
   local name    = options['name'] or fs.split_path(cwd).name:lower()
-  local store   = fs.join(options['store'] or '~/.devkit')
+  local store   = fs.join(options['store'])
   local path    = fs.join(options['path'] or fs.join(store, 'builds', 'colcon_' .. name))
   local command = [[conda activate ros2]]
 
@@ -88,7 +88,7 @@ end
 
 M.colcon = function(cwd, subcommands, options, rest_args, extra_args)
   local name   = options['name'] or fs.split_path(cwd).name:lower()
-  local store  = fs.join(options['store'] or '~/.devkit')
+  local store  = fs.join(options['store'])
   local path   = fs.join(options['path'] or fs.join(store, 'builds', 'colcon_' .. name))
   local select = options['select'] or nil
 

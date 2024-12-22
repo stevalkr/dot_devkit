@@ -8,7 +8,7 @@ local confirm_command = require('utils').confirm_command
 M.pkg = function(cwd, subcommands, options, rest_args, extra_args)
   local name  = options['name']
   local type  = options['type'] or 'meson'
-  local store = fs.join(options['store'] or '~/.devkit')
+  local store = fs.join(options['store'])
 
   if name == nil then
     return {
@@ -21,20 +21,20 @@ M.pkg = function(cwd, subcommands, options, rest_args, extra_args)
   local commands = {
     meson = function()
       return [[mkdir -p ]] .. name .. [[ && ]] ..
-             [[cd ]] .. name .. [[ && ]] ..
-             [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
-             [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
-             [[cp -r ]] .. fs.join(store, 'templates', 'meson', '*') .. [[ ./ && ]] ..
-             [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" meson.build Makefile]]
+          [[cd ]] .. name .. [[ && ]] ..
+          [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
+          [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
+          [[cp -r ]] .. fs.join(store, 'templates', 'meson', '*') .. [[ ./ && ]] ..
+          [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" meson.build Makefile]]
     end,
 
     cmake = function()
       return [[mkdir -p ]] .. name .. [[ && ]] ..
-             [[cd ]] .. name .. [[ && ]] ..
-             [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
-             [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
-             [[cp -r ]] .. fs.join(store, 'templates', 'cmake', '*') .. [[ ./ && ]] ..
-             [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" CMakeLists.txt Makefile]]
+          [[cd ]] .. name .. [[ && ]] ..
+          [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
+          [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
+          [[cp -r ]] .. fs.join(store, 'templates', 'cmake', '*') .. [[ ./ && ]] ..
+          [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" CMakeLists.txt Makefile]]
     end,
 
     catkin = function()

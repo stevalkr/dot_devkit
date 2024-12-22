@@ -4,10 +4,21 @@ local fs = require('utils').fs
 local sh = require('utils').sh
 local confirm_command = require('utils').confirm_command
 
-M.clean = function(cwd, subcommands, options, rest_args, extra_args)
-  local name  = options['name'] or fs.split_path(cwd).name:lower()
-  local store = fs.join(options['store'] or '~/.devkit')
-  local path  = fs.join(options['path'] or fs.join(store, 'builds', name))
+local find_path = function(cwd, options)
+  local name = options['name'] or fs.split_path(cwd).name:lower()
+
+  local debug = options['debug'] or 'false'
+  if debug == 'true' then
+    name = name .. '_debug'
+  end
+
+  local store = fs.join(options['store'])
+
+  local default_path = fs.join(store, 'builds', name)
+  if options['local'] == 'true' then
+    default_path = fs.join(cwd, '_build')
+  end
+  local path = fs.join(options['path'] or default_path)
 
   if not fs.exists(path) then
     if fs.exists(fs.join(cwd, 'build')) then
@@ -17,6 +28,12 @@ M.clean = function(cwd, subcommands, options, rest_args, extra_args)
       path = fs.join(cwd, '_build')
     end
   end
+
+  return name, path
+end
+
+M.clean = function(cwd, subcommands, options, rest_args, extra_args)
+  local name, path = find_path(cwd, options)
 
   io.write('Cleaning "' .. name .. '" under\n  ' .. path .. '\n\n')
 
@@ -31,36 +48,22 @@ M.install = function(cwd, subcommands, options, rest_args, extra_args)
   return M.build(cwd, { 'install' }, options, rest_args, extra_args)
 end
 
+M.compile_commands = function(cwd, subcommands, options, rest_args, extra_args)
+  local name, path = find_path(cwd, options)
+
+  io.write('Linking compile_commands.json of "' .. name .. '" under\n  ' .. path .. '\n\n')
+
+  return confirm_command('ln -sf "' .. fs.join(path, 'compile_commands.json') .. '" "' .. fs.join(cwd, 'compile_commands.json') .. '"')
+end
+
 M.build = function(cwd, subcommands, options, rest_args, extra_args)
-  local name = options['name'] or fs.split_path(cwd).name:lower()
-
   local debug = options['debug'] or 'false'
-  if debug == 'true' then
-    name = name .. '_debug'
-  end
-
-  local store = fs.join(options['store'] or '~/.devkit')
-
-  local default_path = fs.join(store, 'builds', name)
-  if options['local'] == 'true' then
-    default_path = fs.join(cwd, '_build')
-  end
-  local path  = fs.join(options['path'] or default_path)
-
-  if not fs.exists(path) then
-    if fs.exists(fs.join(cwd, 'build')) then
-      path = fs.join(cwd, 'build')
-    end
-    if fs.exists(fs.join(cwd, '_build')) then
-      path = fs.join(cwd, '_build')
-    end
-  end
+  local name, path = find_path(cwd, options)
 
   if #subcommands > 0 and subcommands[1] == 'find_path' then
     print(path)
     return {}
   end
-
 
   io.write('Building "' .. name .. '" under\n  ' .. path .. '\n\n')
 
