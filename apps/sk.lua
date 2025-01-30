@@ -25,10 +25,14 @@ Usage:
 M.pkg = require('shortkut.pkg').pkg
 h['pkg'] = [[
 Usage:
-  sk pkg --name <name> [options]         Create a new project
+  sk pkg [subcommands] [options]         Create a new project
+
+Subcommands:
+  create                                 Create project
+  nix                                    Copy nix template
 
 Options:
-  -n, --name <name>                      Project name, required
+  -n, --name <name>                      Project name, required for create
   -t, --type <type>                      Project type, default to meson. Available types: meson, cmake, catkin, colcon
 ]]
 

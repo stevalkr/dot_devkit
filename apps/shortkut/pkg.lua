@@ -10,44 +10,57 @@ M.pkg = function(cwd, subcommands, options, rest_args, extra_args)
   local type  = options['type'] or 'meson'
   local store = fs.join(options['store'])
 
-  if name == nil then
+  if #subcommands == 0 then
     return {
       search_path = 'true',
       use_shell = 'true',
-      command = 'echo --name is required. && exit 1'
+      command = 'echo No action is specified. && exit 1'
     }
   end
 
-  local commands = {
-    meson = function()
-      return [[mkdir -p ]] .. name .. [[ && ]] ..
-          [[cd ]] .. name .. [[ && ]] ..
-          [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
-          [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
-          [[cp -r ]] .. fs.join(store, 'templates', 'meson', '*') .. [[ ./ && ]] ..
-          [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" meson.build Makefile]]
-    end,
+  if subcommands[1] == 'create' then
+    if name == nil then
+      return {
+        search_path = 'true',
+        use_shell = 'true',
+        command = 'echo --name is required. && exit 1'
+      }
+    end
 
-    cmake = function()
-      return [[mkdir -p ]] .. name .. [[ && ]] ..
-          [[cd ]] .. name .. [[ && ]] ..
-          [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
-          [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
-          [[cp -r ]] .. fs.join(store, 'templates', 'cmake', '*') .. [[ ./ && ]] ..
-          [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" CMakeLists.txt Makefile]]
-    end,
+    local commands = {
+      meson = function()
+        return [[mkdir -p ]] .. name .. [[ && ]] ..
+            [[cd ]] .. name .. [[ && ]] ..
+            [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
+            [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
+            [[cp -r ]] .. fs.join(store, 'templates', 'meson', '*') .. [[ ./ && ]] ..
+            [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" meson.build Makefile]]
+      end,
 
-    catkin = function()
-      return [[echo Not implemented yet. Develop with catkin flake and run with conda ros env. && exit 1]]
-    end,
+      cmake = function()
+        return [[mkdir -p ]] .. name .. [[ && ]] ..
+            [[cd ]] .. name .. [[ && ]] ..
+            [[cp ]] .. fs.join(store, 'templates', 'clang-format') .. [[ ./.clang-format && ]] ..
+            [[cp ]] .. fs.join(store, 'templates', 'Makefile') .. [[ ./Makefile && ]] ..
+            [[cp -r ]] .. fs.join(store, 'templates', 'cmake', '*') .. [[ ./ && ]] ..
+            [[sed -i '' "s/{{ project_name }}/]] .. snake(name) .. [[/g" CMakeLists.txt Makefile]]
+      end,
 
-    colcon = function()
-      return [[echo Not implemented yet. Develop and run with conda ros2 env. && exit 1]]
-    end,
-  }
+      catkin = function()
+        return [[echo Not implemented yet. Develop with catkin flake and run with conda ros env. && exit 1]]
+      end,
 
-  local command = commands[type]()
-  return confirm_command(command)
+      colcon = function()
+        return [[echo Not implemented yet. Develop and run with conda ros2 env. && exit 1]]
+      end,
+    }
+
+    local command = commands[type]()
+    return confirm_command(command)
+  elseif subcommands[1] == 'nix' then
+    local command = [[cp ]] .. fs.join(store, 'templates', 'nix', 'flake.*') .. [[ ./ ]]
+    return confirm_command(command)
+  end
 end
 
 return M

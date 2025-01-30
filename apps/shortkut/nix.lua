@@ -19,19 +19,10 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
     save = '--profile "' .. fs.join(store, 'nix-profiles', name) .. '"'
   end
 
-  local check_flake = function(p)
-    if fs.exists(p) then
-      for _, file in ipairs(fs.ls_dir(p)['files']) do
-        if file == 'flake.nix' then
-          return true
-        end
-      end
-    end
-    return false
-  end
-
   local flake_path = nil
-  local candidates = { path, cwd, fs.join(cwd, 'flake') }
+  local link_path = fs.join(store, 'flakes', name .. '.sym')
+  local candidates = { cwd, fs.join(cwd, 'flake'), path, link_path }
+  local check_flake = function(p) return fs.exists(p) and fs.exists(fs.join(p, 'flake.nix')) end
   for _, candidate in ipairs(candidates) do
     if check_flake(candidate) then
       flake_path = candidate
@@ -47,13 +38,19 @@ M.flake = function(cwd, subcommands, options, rest_args, extra_args)
     }
   end
 
+  local command = ''
+  if flake_path ~= path and flake_path ~= link_path and not fs.exists(link_path) then
+    command = 'ln -sn ' .. flake_path .. ' ' .. link_path .. ' ; '
+  end
+
   if not git then
     flake_path = 'path:' .. flake_path
   end
 
   io.write('Using flake "' .. name .. '" under\n  ' .. flake_path .. '\n\n')
 
-  local command = 'nix develop "' .. flake_path .. '" ' .. save .. ' ' .. table.concat(extra_args, ' ') .. ' --command fish'
+  command = command ..
+      'nix develop "' .. flake_path .. '" ' .. save .. ' ' .. table.concat(extra_args, ' ') .. ' --command fish'
   return confirm_command(command, function() sh.set_env('DK_ENV', name, 1) end)
 end
 

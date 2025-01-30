@@ -13,6 +13,16 @@ M.sh = sh or {
   get_env = function(...) end,
 }
 
+M.cmd = function(command)
+  local handle = io.popen(command)
+  local result = handle:read('*a')
+  handle:close()
+  if result == '' then
+    return nil
+  end
+  return result
+end
+
 M.snake = function(path)
   return path
       :gsub('%f[^%l]%u', '_%1')

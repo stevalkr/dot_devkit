@@ -2,6 +2,7 @@ local M = {}
 
 local fs = require('utils').fs
 local sh = require('utils').sh
+local cmd = require('utils').cmd
 local confirm_command = require('utils').confirm_command
 
 local find_path = function(cwd, options)
@@ -53,7 +54,8 @@ M.compile_commands = function(cwd, subcommands, options, rest_args, extra_args)
 
   io.write('Linking compile_commands.json of "' .. name .. '" under\n  ' .. path .. '\n\n')
 
-  return confirm_command('ln -sf "' .. fs.join(path, 'compile_commands.json') .. '" "' .. fs.join(cwd, 'compile_commands.json') .. '"')
+  return confirm_command('ln -sf "' ..
+    fs.join(path, 'compile_commands.json') .. '" "' .. fs.join(cwd, 'compile_commands.json') .. '"')
 end
 
 M.build = function(cwd, subcommands, options, rest_args, extra_args)
@@ -97,13 +99,13 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
           return 'meson install -C "' .. path .. '"'
         end
       else
-        -- meson setup --buildtype=debug
-        if debug == 'true' then
-          return 'meson setup "' .. path .. '" --buildtype=debug'
-        end
-
         -- meson setup
-        return 'meson setup "' .. path .. '"'
+        local setup = 'meson setup "' .. path .. '"'
+        if debug == 'true' then
+          -- meson setup --buildtype=debug
+          setup = setup .. ' --buildtype=debug'
+        end
+        return setup
       end
     end,
 
@@ -118,13 +120,13 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
           return 'ctest --test-dir "' .. path .. '"'
         end
       else
-        -- cmake -B -DCMAKE_BUILD_TYPE=DEBUG
-        if debug == 'true' then
-          return 'cmake -B "' ..
-              path .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON -DCMAKE_BUILD_TYPE=DEBUG'
-        end
         -- cmake -B
-        return 'cmake -B "' .. path .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON'
+        local setup = 'cmake -B "' .. path .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON'
+        if debug == 'true' then
+          -- cmake -B -DCMAKE_BUILD_TYPE=DEBUG
+          setup = setup .. ' -DCMAKE_BUILD_TYPE=DEBUG'
+        end
+        return setup
       end
     end,
 

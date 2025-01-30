@@ -2,7 +2,7 @@ rec {
   description = "Cpp Environment";
 
   inputs = {
-    nixpkgs.url = github:nixos/nixpkgs/nixpkgs-24.05-darwin;
+    nixpkgs.url = github:nixos/nixpkgs/nixpkgs-24.11-darwin;
   };
 
   outputs = { self, nixpkgs }:
