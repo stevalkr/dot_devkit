@@ -24,7 +24,7 @@ rec {
           ];
           config = {
             allowUnfree = true;
-            cudaSupport = true;
+            cudaSupport = !stdenv.isDarwin;
           };
         };
       in

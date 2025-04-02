@@ -110,7 +110,24 @@ Options:
   -n, --name <name>                      Project name, default to cwd (lower case)
   -p, --path <build dir>                 Flake directory, default to <store>/flakes/<name> or cwd/flake
   -s, --save                             Save profile to <store>/nix-profiles/<name>
+  -c, --command <command>                Command to run, default to fish
   --git                                  Use git path, default to false
+]]
+
+
+--
+-- pixi
+--
+M.pixi = require('shortkut.pixi').pixi
+h['pixi'] = [[
+Usage:
+  sk pixi [options] [--] <extra arguments>
+
+Options:
+  -n, --name <name>                      Project name, default to cwd (lower case)
+  -p, --path <build dir>                 Pixi directory, default to <store>/pixis/<name> or cwd/pixi
+  --clean                                Clean cache
+  --clean-all                            Clean global caches
 ]]
 
 
@@ -118,9 +135,58 @@ Options:
 -- ros
 --
 M.ros = require('shortkut.ros').ros
-M.ros2 = require('shortkut.ros').ros2
+h['ros'] = [[
+Usage:
+  sk ros [options]
+
+Options:
+  -e, --env <env>                         Conda environment, default to ros
+  -c, --command <command>                 Command to run, default to zsh
+  -n, --name <name>                       Project name, default to cwd (lower case)
+  -p, --path <build dir>                  Build directory, default to <store>/builds/catkin_<name> or cwd
+]]
+
 M.catkin = require('shortkut.ros').catkin
+h['catkin'] = [[
+Usage:
+  sk catkin [subcommands] [options] [--] <extra arguments>
+
+Subcommands:
+  build                                   Build project
+  clean                                   Clean build directory
+
+Options:
+  -n, --name <name>                       Project name, default to cwd (lower case)
+  -p, --path <build dir>                  Build directory, default to <store>/builds/catkin_<name> or cwd
+  --select <packages>                     Select packages to build, default to ""
+]]
+
+M.ros2 = require('shortkut.ros').ros2
+h['ros2'] = [[
+Usage:
+  sk ros2 [options]
+
+Options:
+  -e, --env <env>                         Conda environment, default to ros2
+  -c, --command <command>                 Command to run, default to zsh
+  -n, --name <name>                       Project name, default to cwd (lower case)
+  -p, --path <build dir>                  Build directory, default to <store>/builds/colcon_<name> or cwd
+]]
+
 M.colcon = require('shortkut.ros').colcon
+h['colcon'] = [[
+Usage:
+  sk colcon [subcommands] [options] [--] <extra arguments>
+
+Subcommands:
+  build                                   Build project
+  clean                                   Clean build directory
+
+Options:
+  -n, --name <name>                       Project name, default to cwd (lower case)
+  -p, --path <build dir>                  Build directory, default to <store>/builds/colcon_<name> or cwd
+  --select <packages>                     Select packages to build, default to ""
+]]
 
 
 --
@@ -141,6 +207,7 @@ Commands:
   compile_commands                    Link compile_commands.json
   dev                                 Start dev environment
   flake                               Start flake environment
+  pixi                                Start pixi environment
   ros                                 Start ros environment
   ros2                                Start ros2 environment
   catkin                              Build with catkin

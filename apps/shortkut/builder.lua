@@ -74,6 +74,8 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
     proj_type = 'meson'
   elseif fs.exists('CMakeLists.txt') then
     proj_type = 'cmake'
+  elseif fs.exists('Cargo.toml') then
+    proj_type = 'cargo'
   elseif fs.exists('Makefile') then
     proj_type = 'make'
   end
@@ -142,6 +144,21 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
       -- make install
       if subcommands[1] == 'install' then
         return 'make install'
+      end
+    end,
+
+    cargo = function()
+      if #subcommands == 0 then
+        -- cargo build
+        return 'cargo build --target-dir ' .. path
+      end
+      -- cargo test
+      if subcommands[1] == 'test' then
+        return 'cargo test --target-dir ' .. path
+      end
+      -- cargo install
+      if subcommands[1] == 'install' then
+        return 'cargo install --target-dir ' .. path
       end
     end,
 

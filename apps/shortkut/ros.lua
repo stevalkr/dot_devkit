@@ -8,22 +8,20 @@ M.ros = function(cwd, subcommands, options, rest_args, extra_args)
   local name    = options['name'] or fs.split_path(cwd).name:lower()
   local store   = fs.join(options['store'])
   local path    = fs.join(options['path'] or fs.join(store, 'builds', 'catkin_' .. name))
-  local command = [[conda activate ros]]
+  local cmd     = options['command'] or 'fish'
+  local env     = options['env'] or 'ros'
+  local command = [[conda activate ]] .. env
 
   local source  = fs.join(path, 'devel/setup.zsh')
   if fs.exists(source) then
     print('Sourcing: ' .. source)
-    command = command .. [[ && ]] ..
-        [[source ]] .. source
+    command = command .. [[ && source ]] .. source
   end
 
   return confirm_command(
     [[zsh -c "source ~/.zshrc && ]] ..
-    [[export CONDA_BUILD=1 && ]] ..
     command .. [[ && ]] ..
-    [[export PATH=$CONDA_PREFIX/bin:$PATH && ]] ..
-    [[export ROS_PACKAGE_PATH=$CONDA_PREFIX/share:$ROS_PACKAGE_PATH && ]] ..
-    [[exec fish"]]
+    [[exec ]] .. cmd .. [["]]
   )
 end
 
@@ -63,7 +61,9 @@ M.ros2 = function(cwd, subcommands, options, rest_args, extra_args)
   local name    = options['name'] or fs.split_path(cwd).name:lower()
   local store   = fs.join(options['store'])
   local path    = fs.join(options['path'] or fs.join(store, 'builds', 'colcon_' .. name))
-  local command = [[conda activate ros2]]
+  local cmd     = options['command'] or 'fish'
+  local env     = options['env'] or 'ros2'
+  local command = [[conda activate ]] .. env
 
   local source  = fs.join(path, 'install/setup.zsh')
   if fs.exists(source) then
@@ -71,18 +71,10 @@ M.ros2 = function(cwd, subcommands, options, rest_args, extra_args)
     command = command .. ' && source ' .. source
   end
 
-  local export_env =
-      [[export CONDA_BUILD=1 && ]] ..
-      [[export LDFLAGS_LD=\"$LDFLAGS_LD -L/opt/homebrew/Caskroom/miniconda/base/envs/ros2/lib]] ..
-      [[ -rpath /opt/homebrew/Caskroom/miniconda/base/envs/ros2/lib\" && ]] ..
-      [[export LDFLAGS=\"$LDFLAGS -L/opt/homebrew/Caskroom/miniconda/base/envs/ros2/lib]] ..
-      [[ -Wl,-rpath,/opt/homebrew/Caskroom/miniconda/base/envs/ros2/lib\"]]
-
   return confirm_command(
     [[zsh -c "source ~/.zshrc && ]] ..
-    export_env .. [[ && ]] ..
     command .. [[ && ]] ..
-    [[exec fish"]]
+    [[exec ]] .. cmd .. [["]]
   )
 end
 

@@ -37,13 +37,4 @@ M.notify = function(cwd, subcommands, options, rest_args, extra_args)
   return confirm_command(command)
 end
 
-M.source = function(cwd, subcommands, options, rest_args, extra_args)
-  local file = table.concat(require('utils').merge_tables(subcommands, rest_args, extra_args), ' ')
-  return confirm_command(
-    [[exec zsh -c "source ~/.zshrc && ]] ..
-    [[source ]] .. file .. [[ && ]] ..
-    [[exec fish"]]
-  )
-end
-
 return M

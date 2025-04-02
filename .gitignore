@@ -1,3 +1,4 @@
 /builds
 /nix-profiles
 /flakes/*.sym
+/pixis/**/.pixi
