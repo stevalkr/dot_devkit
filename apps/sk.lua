@@ -126,6 +126,7 @@ Usage:
 Options:
   -n, --name <name>                      Project name, default to cwd (lower case)
   -p, --path <build dir>                 Pixi directory, default to <store>/pixis/<name> or cwd/pixi
+  -e, --env <env>                        Pixi environment
   --clean                                Clean cache
   --clean-all                            Clean global caches
 ]]

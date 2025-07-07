@@ -8,6 +8,7 @@ M.pixi = function(cwd, subcommands, options, rest_args, extra_args)
   local name       = options['name'] or fs.split_path(cwd).name:lower()
   local store      = fs.join(options['store'])
   local path       = fs.join(options['path'] or fs.join(store, 'pixis', name))
+  local env        = options['env']
 
   local pixi_path  = nil
   local link_path  = fs.join(store, 'pixis', name .. '.sym')
@@ -50,15 +51,24 @@ M.pixi = function(cwd, subcommands, options, rest_args, extra_args)
   end
 
   local command = ''
-  if pixi_path ~= path and pixi_path ~= pixi_path and not fs.exists(link_path) then
-    command = 'ln -sn ' .. pixi_path .. ' ' .. link_path .. ' ; '
+  if pixi_path ~= path and pixi_path ~= link_path then
+    if not fs.exists(link_path) then
+      command = 'mkdir -p ' .. fs.join(link_path, 'content') .. ' && ' ..
+          'ln -sn ' .. pixi_path .. ' ' .. fs.join(link_path, 'link') .. ' && ' ..
+          'ln -sn ' .. fs.join(pixi_path, '*') .. ' ' .. fs.join(link_path, 'content') .. ' && ' ..
+          'ln -nf ' .. fs.join(pixi_path, 'pixi.*') .. ' ' .. fs.join(link_path, 'content') .. ' && '
+    end
+    pixi_path = fs.join(link_path, 'content')
   end
 
   io.write('Using pixi "' .. name .. '" under\n' .. pixi_path .. '\n\n')
 
   command = command ..
-      'pixi shell --manifest-path="' .. pixi_path .. '" ' .. table.concat(extra_args, ' ')
-  return confirm_command(command, function() sh.set_env('DK_ENV', name, 1) end)
+      'pixi shell --manifest-path="' .. pixi_path .. '" '
+  if env then
+    command = command .. '-e ' .. env .. ' '
+  end
+  return confirm_command(command .. table.concat(extra_args, ' '), function() sh.set_env('DK_ENV', name, 1) end)
 end
 
 return M

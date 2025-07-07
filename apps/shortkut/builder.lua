@@ -123,7 +123,8 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
         end
       else
         -- cmake -B
-        local setup = 'cmake -B "' .. path .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON'
+        local setup = 'cmake -B "' .. path .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON' ..
+            ' -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache'
         if debug == 'true' then
           -- cmake -B -DCMAKE_BUILD_TYPE=DEBUG
           setup = setup .. ' -DCMAKE_BUILD_TYPE=DEBUG'
