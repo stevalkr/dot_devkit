@@ -40,7 +40,7 @@ run_command apt-add-repository -y ppa:fish-shell/release-4
 run_command curl -fsSL https://deb.nodesource.com/setup_23.x -o /tmp/nodesource_setup.sh
 run_command sudo -E bash /tmp/nodesource_setup.sh
 run_command apt update && run_command apt upgrade -y
-run_command apt install -y git fzf fish nodejs unzip codespell neovim libreadline-dev
+run_command apt install -y git fzf fish nodejs unzip codespell tmux neovim libreadline-dev
 
 # Change default shell to fish
 chsh -s /usr/bin/fish
@@ -51,7 +51,11 @@ git clone https://github.com/stevalkr/dot_nvim.git ~/.config/nvim
 
 # Install Nix package manager
 if [[ "$install_nix" == "y" || "$install_nix" == "Y" || -z "$install_nix" ]]; then
-    sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --no-daemon --yes
+    if [[ "$use_proxychains" == "y" || "$use_proxychains" == "Y" || -z "$use_proxychains" ]]; then
+        proxychains sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --no-daemon --yes
+    else
+        sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --no-daemon --yes
+    fi
     mkdir -p ~/.config/nix
     cat > ~/.config/nix/nix.conf<< EOF
 max-jobs = auto
