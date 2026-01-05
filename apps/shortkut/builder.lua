@@ -52,10 +52,21 @@ end
 M.compile_commands = function(cwd, subcommands, options, rest_args, extra_args)
   local name, path = find_path(cwd, options)
 
-  io.write('Linking compile_commands.json of "' .. name .. '" under\n  ' .. path .. '\n\n')
+  io.write(
+    'Linking compile_commands.json of "'
+      .. name
+      .. '" under\n  '
+      .. path
+      .. '\n\n'
+  )
 
-  return confirm_command('ln -sf "' ..
-    fs.join(path, 'compile_commands.json') .. '" "' .. fs.join(cwd, 'compile_commands.json') .. '"')
+  return confirm_command(
+    'ln -sf "'
+      .. fs.join(path, 'compile_commands.json')
+      .. '" "'
+      .. fs.join(cwd, 'compile_commands.json')
+      .. '"'
+  )
 end
 
 M.build = function(cwd, subcommands, options, rest_args, extra_args)
@@ -123,8 +134,10 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
         end
       else
         -- cmake -B
-        local setup = 'cmake -B "' .. path .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON' ..
-            ' -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache'
+        local setup = 'cmake -B "'
+          .. path
+          .. '" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_COLOR_DIAGNOSTICS=ON'
+          .. ' -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache'
         if debug == 'true' then
           -- cmake -B -DCMAKE_BUILD_TYPE=DEBUG
           setup = setup .. ' -DCMAKE_BUILD_TYPE=DEBUG'
@@ -165,7 +178,7 @@ M.build = function(cwd, subcommands, options, rest_args, extra_args)
 
     unknown = function()
       return 'echo Unknown project type. && exit 1'
-    end
+    end,
   }
 
   local command = commands[proj_type]() .. ' ' .. table.concat(extra_args, ' ')

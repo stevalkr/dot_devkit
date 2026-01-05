@@ -26,7 +26,6 @@ rec {
         {
           buildInputs = [
             pkgs.fmt
-            pkgs.eigen
             pkgs.ceres-solver
           ];
 

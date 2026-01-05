@@ -21,6 +21,11 @@ rec {
                 (ros-final: ros-prev: {
                   catkin-simple = ros-final.callPackage ./pkgs/catkin-simple.nix { };
                   prophesee-event-msgs = ros-final.callPackage ./pkgs/prophesee-event-msgs/noetic.nix { };
+                  rosbag-storage = ros-prev.rosbag-storage.overrideAttrs (
+                    finalAttrs: prevAttrs: {
+                      patches = (prevAttrs.patches or [ ]) ++ [ ./pkgs/rosbag-storage/fix_unsigned_char.patch ];
+                    }
+                  );
                 })
               );
 
@@ -67,6 +72,8 @@ rec {
 
               pkgs.pyright
               pkgs.python3
+              pkgs.python3Packages.pandas
+              pkgs.python3Packages.jupyter
               pkgs.python3Packages.numpy
               pkgs.python3Packages.scipy
               pkgs.python3Packages.networkx

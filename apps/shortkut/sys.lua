@@ -11,7 +11,7 @@ M.notify = function(cwd, subcommands, options, rest_args, extra_args)
   local params = {
     ApiKey = sh.get_env('NOTIFY_API_KEY'),
     PushTitle = 'devkit notify',
-    PushText = ' '
+    PushText = ' ',
   }
 
   for i, v in ipairs(args) do
@@ -33,7 +33,9 @@ M.notify = function(cwd, subcommands, options, rest_args, extra_args)
     param_str = param_str .. k .. '=' .. v
   end
 
-  local command = [[curl -X POST -d "]] .. param_str .. [[" https://www.notifymydevice.com/push]]
+  local command = [[curl -X POST -d "]]
+    .. param_str
+    .. [[" https://www.notifymydevice.com/push]]
   return confirm_command(command)
 end
 
